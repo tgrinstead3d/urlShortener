@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Grinstead Bro's URL Shortener</title>
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+</head>
+<body>
+<div class="container">
+    <h1>Grinstead Bro's URL Shortener</h1>
+    <form hx-post="/shorten" hx-target="#shortened">
+        <input type="url" name="url" required>
+        <button>Shorten</button>
+    </form>
+    <div id="shortened"><h3>This is your shortened URL</h3></div>
+</body>
+</html>
