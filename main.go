@@ -5,6 +5,8 @@ import (
 	"math/rand"
 	"net/http"
 	"time"
+
+	"github.com/gin-gonic/gin"
 )
 
 type Shortener struct {
@@ -12,62 +14,50 @@ type Shortener struct {
 }
 
 func main() {
+	gin.SetMode(gin.ReleaseMode)
+	r := gin.Default()
+
+	r.LoadHTMLGlob("templates/*")
+
 	shortener := &Shortener{
 		urls: make(map[string]string),
 	}
 
-	http.HandleFunc("/", handleForm)
-	http.HandleFunc("/shorten", shortener.HandleShorten)
-	http.HandleFunc("/short/", shortener.HandleRedirect)
+	r.GET("/", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "index.html", gin.H{})
+	})
 
-	fmt.Println("URL Shortener is running on :8080")
-	http.ListenAndServe(":8080", nil)
+	r.POST("/shorten", shortener.HandleShorten)
+	r.GET("/shortened", shortener.HandleShorten)
+	r.GET("/short/:key", shortener.HandleRedirect)
+
+	fmt.Println("URL Shortener app is running on :8080")
+	r.Run(":8080")
 }
 
-func handleForm(w http.ResponseWriter, r *http.Request) {
-	if r.Method == http.MethodPost {
-		http.Redirect(w, r, "/shorten", http.StatusSeeOther)
-		return
-	}
-
-	http.ServeFile(w, r, "index.html")
-}
-
-func (us *Shortener) HandleShorten(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodGet {
-		return
-	}
-
-	originalURL := r.FormValue("url")
+func (us *Shortener) HandleShorten(c *gin.Context) {
+	originalURL := c.PostForm("url")
 	if originalURL == "" {
-		http.Error(w, "URL parameter is missing", http.StatusBadRequest)
+		c.String(http.StatusBadRequest, "URL parameter is missing")
 		return
 	}
 
 	shortKey := generateShortKey()
 	us.urls[shortKey] = originalURL
 
-	shortenedURL := fmt.Sprintf("http://localhost:8080/short/%s", shortKey)
-
-
-	
-	w.Write([]byte(shortenedURL))
-
+	shortenedURL := fmt.Sprintf("http://www.grinsteadshorty/%s", shortKey)
+	fmt.Printf("New shortened URL is %s", shortenedURL)
+	c.String(http.StatusOK, shortenedURL)
 }
 
-func (us *Shortener) HandleRedirect(w http.ResponseWriter, r *http.Request) {
-	shortKey := r.URL.Path[len("/short/"):]
-	if shortKey == "" {
-		http.Error(w, "Shortened key is missing", http.StatusBadRequest)
-		return
-	}
-
+func (us *Shortener) HandleRedirect(c *gin.Context) {
+	shortKey := c.Param("key")
 	originalURL, found := us.urls[shortKey]
 	if !found {
-		http.Error(w, "Shortened key not found", http.StatusNotFound)
+		c.String(http.StatusNotFound, "Shortened key not found")
 		return
 	}
-	http.Redirect(w, r, originalURL, http.StatusMovedPermanently)
+	c.Redirect(http.StatusMovedPermanently, originalURL)
 }
 
 func generateShortKey() string {
