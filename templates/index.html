@@ -1,73 +1,73 @@
 <!doctype html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta
+<head>
+    <meta charset="UTF-8" />
+    <meta
             name="viewport"
             content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
-        />
-        <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-        <title>Grinstead Bro's URL Shortener</title>
-        <script src="https://unpkg.com/htmx.org@1.9.10"></script>
-        <script src="https://cdn.jsdelivr.net/npm/vue@3"></script>
-        <link
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Grinstead Bro's URL Shortener</title>
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@3"></script>
+    <link
             rel="stylesheet"
             href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css"
-        />
-    </head>
+    />
+</head>
 
-    <body></body>
+<body></body>
 
-    <script></script>
+<script></script>
 
-    <div id="app">
-        <div class="container">
-            <h1>Grinstead Bro's URL Shortener</h1>
-            <form hx-post="/shorten" hx-target="#shortened">
-                <input
+<div id="app">
+    <div class="container">
+        <h1>Grinstead Bro's URL Shortener</h1>
+        <form hx-post="/shorten" hx-target="#shortened">
+            <input
                     type="url"
                     name="url"
                     required
                     class="input"
                     placeholder="Enter URL"
-                />
-                <button type="submit">Shorten</button>
-            </form>
-            <div>
-                <h3 class="input" id="shortened" hx-get="/shortened"></h3>
-                <button class="copy" @click="copyToClipboard()">Copy</button>
-            </div>
+            />
+            <button type="submit">Shorten</button>
+        </form>
+        <div>
+            <h3 class="input" id="shortened" hx-get="/shortened"></h3>
+            <button class="copy" @click="copyToClipboard()">Copy</button>
         </div>
     </div>
+</div>
 
-    <script type="module">
-        import {
-            createApp,
-            ref,
-        } from "https://unpkg.com/vue@3/dist/vue.esm-browser.js";
+<script type="module">
+    import {
+        createApp,
+        ref,
+    } from "https://unpkg.com/vue@3/dist/vue.esm-browser.js";
 
-        createApp({
-            setup() {
-                let shortUrl = ref("");
-                let copiedText = ref(shortUrl.value);
-                const copyToClipboard = () => {
-                    navigator.clipboard.writeText(shortUrl.value);
-                    copiedText.value = "Copied:" + " " + shortUrl.value;
-                    navigator.clipboard
-                        .readText()
-                        .then(
-                            (clipText) =>
-                                (document.querySelector(".input").innerText +=
-                                    clipText),
-                        );
-                };
-                return {
-                    copiedText,
-                    copyToClipboard,
-                };
-            },
-        }).mount("#app");
+    createApp({
+        setup() {
+            let shortUrl = ref("");
+            let copiedText = ref(shortUrl.value);
+            const copyToClipboard = () => {
+                navigator.clipboard.writeText(shortUrl.value);
+                copiedText.value = "Copied:" + " " + shortUrl.value;
+                navigator.clipboard
+                    .readText()
+                    .then(
+                        (clipText) =>
+                            (document.querySelector(".input").innerText +=
+                                clipText),
+                    );
+            };
+            return {
+                copiedText,
+                copyToClipboard,
+            };
+        },
+    }).mount("#app");
 
-        // replace the text with the shortened url from michael's api. use the hx-get attribute to get the shortened url
-    </script>
+    // replace the text with the shortened url from michael's api. use the hx-get attribute to get the shortened url
+</script>
 </html>
