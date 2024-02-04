@@ -45,7 +45,7 @@ func (us *Shortener) HandleShorten(c *gin.Context) {
 	shortKey := generateShortKey()
 	us.urls[shortKey] = originalURL
 
-	shortenedURL := fmt.Sprintf("http://www.grinsteadshorty/%s", shortKey)
+	shortenedURL := fmt.Sprintf("localhost:8080/short/%s", shortKey)
 	fmt.Printf("New shortened URL is %s", shortenedURL)
 	c.String(http.StatusOK, shortenedURL)
 }
