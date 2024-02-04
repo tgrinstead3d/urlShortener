@@ -15,11 +15,11 @@
 <div id="app">
     <div class="container">
         <h1>Grinstead Bro's URL Shortener</h1>
-        <form hx-swap="outerHTML" hx-target="#shortened" hx-post="/shorten" @submit.prevent>
+        <form hx-swap="innerHTML" hx-target="#shortened" hx-post="/shorten">
             <input type="url" name="url" required />
             <button>Shorten</button>
         </form>
-        <div @click="copyToClipboard">
+        <div @click="copyToClipboard()">
             <p id="shortened">Shortened URL will appear here.</p>
             </div>
     </div>
@@ -31,7 +31,7 @@
     createApp({
         setup() {
             const copyToClipboard = () => {
-                navigator.clipboard.writeText(#shortened);
+                navigator.clipboard.writeText(document.querySelector("#shortened").innerText)
                 navigator.clipboard
                     .readText()
                     .then(
@@ -39,11 +39,9 @@
                     )
             }
             return {
-                copiedText, copyToClipboard
+                copyToClipboard
             }
         }
     }).mount('#app')
-
-    // replace the text with the shortened url from michael's api. use the hx-get attribute to get the shortened url
 </script>
 </html>
