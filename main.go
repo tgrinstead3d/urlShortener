@@ -34,7 +34,7 @@ func handleForm(w http.ResponseWriter, r *http.Request) {
 }
 
 func (us *Shortener) HandleShorten(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodGet {
+	if r.Method != http.MethodPost {
 		return
 	}
 
@@ -50,7 +50,7 @@ func (us *Shortener) HandleShorten(w http.ResponseWriter, r *http.Request) {
 	shortenedURL := fmt.Sprintf("http://localhost:8080/short/%s", shortKey)
 
 
-	
+
 	w.Write([]byte(shortenedURL))
 
 }

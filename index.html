@@ -10,21 +10,18 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
 </head>
 <body>
-
 </body>
-
-<script>
-
-</script>
 
 <div id="app">
     <div class="container">
         <h1>Grinstead Bro's URL Shortener</h1>
-        <form hx-post="/shorten" hx-target="#shortened">
-            <input type="url" name="url" required class="input">
+        <form hx-swap="outerHTML" hx-target="#shortened" hx-post="/shorten" @submit.prevent>
+            <input type="url" name="url" required />
             <button>Shorten</button>
         </form>
-        <div id="shortened"><h3 class="input">{{ copiedText }}</h3><button class="copy" @click="copyToClipboard()">Copy</button></div>
+        <div @click="copyToClipboard">
+            <p id="shortened">Shortened URL will appear here.</p>
+            </div>
     </div>
 </div>
 
@@ -33,15 +30,12 @@
 
     createApp({
         setup() {
-            let shortUrl = ref('short\.url\/' + Math.random().toString(36).substring(7));
-            let copiedText = ref(shortUrl.value);
             const copyToClipboard = () => {
-                navigator.clipboard.writeText(shortUrl.value);
-                copiedText.value = "Copied:" + " " + shortUrl.value;
+                navigator.clipboard.writeText(#shortened);
                 navigator.clipboard
                     .readText()
                     .then(
-                        (clipText) => (document.querySelector(".input").innerText += clipText),
+                        (clipText) => (document.querySelector("#shortened").innerText += clipText),
                     )
             }
             return {
